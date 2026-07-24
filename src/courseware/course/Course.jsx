@@ -57,6 +57,8 @@ const Course = ({
   const shouldDisplayChat = windowWidth >= breakpoints.medium.minWidth;
   const daysPerWeek = course?.courseGoals?.selectedGoal?.daysPerWeek;
 
+  console.log('Course pageeeeeeeeeeeeeeee');
+
   useEffect(() => {
     const celebrateFirstSection = celebrations && celebrations.firstSection;
     setFirstSectionCelebrationOpen(shouldCelebrateOnSectionLoad(

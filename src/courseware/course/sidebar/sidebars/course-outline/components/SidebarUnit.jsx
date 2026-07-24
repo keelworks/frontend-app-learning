@@ -61,7 +61,7 @@ const SidebarUnit = ({
     <li className={classNames({ 'bg-info-100': isActive, 'border-top border-light': !isFirst })}>
       <Link
         to={`/course/${courseId}/${sequenceId}/${id}`}
-        className="row w-100 m-0 d-flex align-items-center text-gray-700"
+        className="row w-100 m-0 d-flex align-items-center text-gray-700 text-decoration-none px-4 py-3 pl-5"
         onClick={handleClick}
       >
         <div className="col-auto p-0">

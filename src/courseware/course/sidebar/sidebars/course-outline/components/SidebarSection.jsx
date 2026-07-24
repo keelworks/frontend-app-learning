@@ -3,13 +3,15 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
 import { Button, Icon } from '@openedx/paragon';
-import { ChevronRight as ChevronRightIcon } from '@openedx/paragon/icons';
+import { ChevronRight as ChevronRightIcon, ExpandMore as ChevronDownIcon } from '@openedx/paragon/icons';
 
 import courseOutlineMessages from '@src/course-home/outline-tab/messages';
 import { getSequenceId } from '@src/courseware/data/selectors';
 import CompletionIcon from './CompletionIcon';
 
-const SidebarSection = ({ intl, section, handleSelectSection }) => {
+const SidebarSection = ({
+  intl, section, isExpanded, handleSelectSection,
+}) => {
   const {
     id,
     complete,
@@ -38,9 +40,10 @@ const SidebarSection = ({ intl, section, handleSelectSection }) => {
   );
 
   return (
-    <li className="mb-2 course-sidebar-section">
+    <li className="course-sidebar-section">
       <Button
         variant="tertiary"
+        aria-expanded={isExpanded}
         className={classNames(
           'd-flex align-items-center w-100 px-4 py-3.5 rounded-0 justify-content-start',
           { 'bg-info-100': isActiveSection },
@@ -48,7 +51,7 @@ const SidebarSection = ({ intl, section, handleSelectSection }) => {
         onClick={() => handleSelectSection(id)}
       >
         {sectionTitle}
-        <Icon src={ChevronRightIcon} />
+        <Icon src={isExpanded ? ChevronDownIcon : ChevronRightIcon} />
       </Button>
     </li>
   );
@@ -66,7 +69,12 @@ SidebarSection.propTypes = {
       total: PropTypes.number,
     }),
   }).isRequired,
+  isExpanded: PropTypes.bool,
   handleSelectSection: PropTypes.func.isRequired,
+};
+
+SidebarSection.defaultProps = {
+  isExpanded: false,
 };
 
 export default injectIntl(SidebarSection);

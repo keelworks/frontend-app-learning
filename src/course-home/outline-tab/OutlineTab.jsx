@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { sendTrackEvent } from '@edx/frontend-platform/analytics';
 import { getAuthenticatedUser } from '@edx/frontend-platform/auth';
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
@@ -28,6 +28,8 @@ import { useModel } from '../../generic/model-store';
 import WelcomeMessage from './widgets/WelcomeMessage';
 import ProctoringInfoPanel from './widgets/ProctoringInfoPanel';
 import AccountActivationAlert from '../../alerts/logistration-alert/AccountActivationAlert';
+import { getCourseOutlineStructure } from '../../courseware/data/thunks';
+import { getCourseOutline } from '../../courseware/data/selectors';
 
 const OutlineTab = ({ intl }) => {
   const {
@@ -66,8 +68,17 @@ const OutlineTab = ({ intl }) => {
     marketingUrl,
   } = useModel('coursewareMeta', courseId);
 
+  const {
+    sequences: courseOutlineSequences,
+    units,
+  } = useSelector(getCourseOutline);
+
+  console.log('courseware sequences:', courseOutlineSequences);
+  console.log('courseware units:', units);
+
   const [expandAll, setExpandAll] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const eventProperties = {
     org_key: org,
@@ -124,6 +135,12 @@ const OutlineTab = ({ intl }) => {
     }
   }, [location.search]);
 
+  useEffect(() => {
+    if (courseId) {
+      dispatch(getCourseOutlineStructure(courseId));
+    }
+  }, [courseId, dispatch]);
+
   return (
     <>
       <div data-learner-type={learnerType} className="row w-100 mx-0 my-3 justify-content-between">
@@ -177,6 +194,8 @@ const OutlineTab = ({ intl }) => {
                     defaultOpen={sections[sectionId].resumeBlock}
                     expand={expandAll}
                     section={sections[sectionId]}
+                    sequences={courseOutlineSequences}
+                    units={units}
                   />
                 ))}
               </ol>

@@ -26,6 +26,7 @@ module.config.js
 
 # Local environment overrides
 .env.private
+.env.development
 
 src/i18n/messages/
 
