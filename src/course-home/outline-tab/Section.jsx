@@ -7,8 +7,7 @@ import { faCheckCircle as farCheckCircle } from '@fortawesome/free-regular-svg-i
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { DisabledVisible } from '@openedx/paragon/icons';
-import SequenceLink from './SequenceLink';
-import { useModel } from '../../generic/model-store';
+import UnitLink from './UnitLink';
 
 import genericMessages from '../../generic/messages';
 import messages from './messages';
@@ -19,6 +18,8 @@ const Section = ({
   expand,
   intl,
   section,
+  sequences,
+  units,
 }) => {
   const {
     complete,
@@ -26,11 +27,6 @@ const Section = ({
     title,
     hideFromTOC,
   } = section;
-  const {
-    courseBlocks: {
-      sequences,
-    },
-  } = useModel('outline', courseId);
 
   const [open, setOpen] = useState(defaultOpen);
 
@@ -110,16 +106,22 @@ const Section = ({
           />
         )}
       >
-        <ol className="list-unstyled">
-          {sequenceIds.map((sequenceId, index) => (
-            <SequenceLink
-              key={sequenceId}
-              id={sequenceId}
-              courseId={courseId}
-              sequence={sequences[sequenceId]}
-              first={index === 0}
-            />
-          ))}
+        <ol className="list-unstyled pl-5">
+          {sequenceIds.map((sequenceId) => {
+            const sequence = sequences[sequenceId] || {};
+            const { unitIds = [] } = sequence;
+
+            return unitIds.map((unitId, index) => (
+              <UnitLink
+                key={unitId}
+                id={unitId}
+                courseId={courseId}
+                sequenceId={sequenceId}
+                unit={units[unitId] || {}}
+                first={index === 0 && sequenceId === sequenceIds[0]}
+              />
+            ));
+          })}
         </ol>
       </Collapsible>
     </li>
@@ -132,6 +134,13 @@ Section.propTypes = {
   expand: PropTypes.bool.isRequired,
   intl: intlShape.isRequired,
   section: PropTypes.shape().isRequired,
+  sequences: PropTypes.objectOf(PropTypes.shape()),
+  units: PropTypes.objectOf(PropTypes.shape()),
+};
+
+Section.defaultProps = {
+  sequences: {},
+  units: {},
 };
 
 export default injectIntl(Section);
