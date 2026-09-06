@@ -26,17 +26,28 @@ const SidebarProvider = ({
   const shouldDisplaySidebarOpen = useWindowSize().width > breakpoints.extraLarge.minWidth;
   const query = new URLSearchParams(window.location.search);
   const { alwaysOpenAuxiliarySidebar } = useSelector(getCoursewareOutlineSidebarSettings);
-  const isInitiallySidebarOpen = shouldDisplaySidebarOpen || query.get('sidebar') === 'true';
 
-  let initialSidebar = shouldDisplayFullScreen ? getLocalStorage(`sidebar.${courseId}`) : null;
-  if (!shouldDisplayFullScreen && isInitiallySidebarOpen && alwaysOpenAuxiliarySidebar) {
+  const isInitiallySidebarOpen = false;
+
+  let initialSidebar = null;
+
+  if (shouldDisplayFullScreen) {
+    initialSidebar = getLocalStorage(`sidebar.${courseId}`);
+  }
+
+  if (!shouldDisplayFullScreen && query.get('sidebar') === 'true' && alwaysOpenAuxiliarySidebar) {
     initialSidebar = isUnitHasDiscussionTopics
       ? SIDEBARS[discussionsSidebar.ID].ID
       : verifiedMode && SIDEBARS[notificationsSidebar.ID].ID;
   }
+
   const [currentSidebar, setCurrentSidebar] = useState(initialSidebar);
-  const [notificationStatus, setNotificationStatus] = useState(getLocalStorage(`notificationStatus.${courseId}`));
-  const [upgradeNotificationCurrentState, setUpgradeNotificationCurrentState] = useState(getLocalStorage(`upgradeNotificationCurrentState.${courseId}`));
+  const [notificationStatus, setNotificationStatus] = useState(
+    getLocalStorage(`notificationStatus.${courseId}`),
+  );
+  const [upgradeNotificationCurrentState, setUpgradeNotificationCurrentState] = useState(
+    getLocalStorage(`upgradeNotificationCurrentState.${courseId}`),
+  );
 
   useEffect(() => {
     if (initialSidebar && currentSidebar !== initialSidebar) {
@@ -56,7 +67,6 @@ const SidebarProvider = ({
   }, [courseId]);
 
   const toggleSidebar = useCallback((sidebarId) => {
-    // Switch to new sidebar or hide the current sidebar
     const newSidebar = sidebarId === currentSidebar ? null : sidebarId;
     setCurrentSidebar(newSidebar);
     setLocalStorage(`sidebar.${courseId}`, newSidebar);

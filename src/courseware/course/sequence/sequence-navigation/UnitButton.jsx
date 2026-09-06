@@ -39,7 +39,7 @@ const UnitButton = ({
       as={Link}
       to={`/course/${courseId}/${sequenceId}/${unitId}`}
     >
-      <UnitIcon type={contentType} />
+      <UnitIcon isCompleted={complete} />
       {showTitle && <span className="unit-title">{title}</span>}
       {showCompletion && complete ? <CompleteIcon size="sm" className="text-success ml-2" /> : null}
       {bookmarked ? (

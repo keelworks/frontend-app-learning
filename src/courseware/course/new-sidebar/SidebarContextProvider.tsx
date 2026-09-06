@@ -18,6 +18,8 @@ interface Props {
   children?: React.ReactNode;
 }
 
+console.log('SidebarContextProvider loaded');
+
 const SidebarProvider: React.FC<Props> = ({
   courseId,
   unitId,
@@ -28,16 +30,14 @@ const SidebarProvider: React.FC<Props> = ({
   const shouldDisplayFullScreen = useWindowSize().width < breakpoints.large.minWidth;
   const shouldDisplaySidebarOpen = useWindowSize().width > breakpoints.medium.minWidth;
   const query = new URLSearchParams(window.location.search);
-  const isInitiallySidebarOpen = shouldDisplaySidebarOpen || query.get('sidebar') === 'true';
   const sidebarKey = `sidebar.${courseId}`;
 
-  let initialSidebar = shouldDisplayFullScreen && sidebarKey in localStorage ? getLocalStorage(sidebarKey)
-    : SIDEBARS.DISCUSSIONS_NOTIFICATIONS.ID;
-
-  if (!shouldDisplayFullScreen && isInitiallySidebarOpen) {
-    initialSidebar = SIDEBARS.DISCUSSIONS_NOTIFICATIONS.ID;
-  }
+  let initialSidebar: typeof SIDEBARS.DISCUSSIONS_NOTIFICATIONS.ID | null = null;
   const [currentSidebar, setCurrentSidebar] = useState(initialSidebar);
+
+  // Keep sidebar collapsed on initial page load
+  const [isSidebarInitialized, setIsSidebarInitialized] = useState(false);
+
   const [notificationStatus, setNotificationStatus] = useState(getLocalStorage(`notificationStatus.${courseId}`));
   const [hideDiscussionbar, setHideDiscussionbar] = useState(false);
   const [hideNotificationbar, setHideNotificationbar] = useState(false);
@@ -46,6 +46,14 @@ const SidebarProvider: React.FC<Props> = ({
   );
   const isDiscussionbarAvailable = (topic?.id && topic?.enabledInContext) || false;
   const isNotificationbarAvailable = !isEmpty(verifiedMode);
+
+  // Ensure the sidebar starts collapsed
+  useEffect(() => {
+    if (!isSidebarInitialized) {
+      setCurrentSidebar(null);
+      setIsSidebarInitialized(true);
+    }
+  }, [isSidebarInitialized]);
 
   const onNotificationSeen = useCallback(() => {
     setNotificationStatus('inactive');
