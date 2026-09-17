@@ -1,39 +1,24 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faVideo, faBook, faEdit, faTasks, faLock,
-} from '@fortawesome/free-solid-svg-icons';
 
-const UnitIcon = ({ type }) => {
-  let icon = null;
-  switch (type) {
-    case 'video':
-      icon = faVideo;
-      break;
-    case 'other':
-      icon = faBook;
-      break;
-    case 'vertical':
-      icon = faTasks;
-      break;
-    case 'problem':
-      icon = faEdit;
-      break;
-    case 'lock':
-      icon = faLock;
-      break;
-    default:
-      icon = faBook;
-  }
+import completedIcon from '../../sidebar/sidebars/course-outline/icons/completed.png';
+import incompleteIcon from '../../sidebar/sidebars/course-outline/icons/incomplete.png';
+
+const UnitIcon = ({ isCompleted }) => {
+  const icon = isCompleted ? completedIcon : incompleteIcon;
 
   return (
-    <FontAwesomeIcon className="unit-icon" icon={icon} />
+    <img
+      className="unit-icon"
+      src={icon}
+      alt=""
+      width="24"
+      height="24"
+    />
   );
 };
 
 UnitIcon.propTypes = {
-  type: PropTypes.oneOf(['video', 'other', 'vertical', 'problem', 'lock']).isRequired,
+  isCompleted: PropTypes.bool.isRequired,
 };
 
 export default UnitIcon;
