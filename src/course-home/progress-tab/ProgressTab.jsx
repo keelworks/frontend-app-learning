@@ -7,8 +7,8 @@ import CourseCompletion from './course-completion/CourseCompletion';
 import CourseGrade from './grades/course-grade/CourseGrade';
 import DetailedGrades from './grades/detailed-grades/DetailedGrades';
 import GradeSummary from './grades/grade-summary/GradeSummary';
+import ImportantDates from './important-dates/ImportantDates';
 import ProgressHeader from './ProgressHeader';
-import RelatedLinks from './related-links/RelatedLinks';
 
 import { useModel } from '../../generic/model-store';
 
@@ -50,7 +50,7 @@ const ProgressTab = () => {
         {/* Side panel */}
         <div className="col-12 col-md-4 p-0 px-md-4">
           {wideScreen && <CertificateStatus />}
-          <RelatedLinks />
+          <ImportantDates />
         </div>
       </div>
     </>
