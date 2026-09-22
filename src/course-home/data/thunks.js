@@ -60,6 +60,7 @@ export function fetchTab(courseId, tab, getTabData, targetUserId) {
           modelType: tab,
           model: {
             id: courseId,
+            ...(tab === 'dates' ? { courseDateBlocks: [] } : {}),
             ...tabDataResult.value,
           },
         }));
