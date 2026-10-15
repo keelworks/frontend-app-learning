@@ -3,9 +3,15 @@ import { Factory } from 'rosie';
 import { initializeTestStore, render, screen } from '../setupTest';
 import LoadedTabPage from './LoadedTabPage';
 
-jest.mock('../course-tabs/CourseTabsNavigation', () => function () {
-  return <div data-testid="CourseTabsNavigation" />;
+/* eslint-disable react/prop-types */
+jest.mock('../course-tabs/CourseTabsNavigation', () => function ({ tabs }) {
+  return (
+    <div data-testid="CourseTabsNavigation">
+      {tabs.map(({ slug, title, url }) => <a key={slug} href={url}>{title}</a>)}
+    </div>
+  );
 });
+/* eslint-enable react/prop-types */
 jest.mock('../instructor-toolbar/InstructorToolbar', () => function () {
   return <div data-testid="InstructorToolbar" />;
 });
@@ -45,6 +51,18 @@ describe('Loaded Tab Page', () => {
     render(<LoadedTabPage {...mockData} courseId={courseMetadata.id} />, { store: testStore });
 
     expect(screen.getByTestId('InstructorToolbar')).toBeInTheDocument();
+  });
+
+  it('hides the Dates tab and adds a Bookmark tab last', () => {
+    render(<LoadedTabPage {...mockData} />);
+
+    const links = screen.getAllByRole('link');
+    expect(screen.queryByRole('link', { name: 'Dates' })).not.toBeInTheDocument();
+    expect(links[links.length - 1]).toHaveTextContent('Bookmark');
+    expect(links[links.length - 1]).toHaveAttribute(
+      'href',
+      `http://localhost:18000/courses/${mockData.courseId}/bookmarks/`,
+    );
   });
 
   it('shows streak celebration modal', async () => {

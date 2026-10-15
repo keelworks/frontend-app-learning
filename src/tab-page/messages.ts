@@ -11,6 +11,11 @@ const messages = defineMessages({
     defaultMessage: 'Loading course page…',
     description: 'When content of the course is still loading...etc',
   },
+  bookmarkTab: {
+    id: 'learning.tabs.bookmark',
+    defaultMessage: 'Bookmark',
+    description: 'Title of the course tab that opens the learner\'s bookmarked pages',
+  },
 });
 
 export default messages;

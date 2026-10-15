@@ -430,6 +430,15 @@
   top: 0;
 }
 
+// Keep the Global Nav visible while scrolling on pages that show the course tabs.
+// Scoped with :has() so courseware unit pages, whose sidebars stick to top: 0, are unaffected.
+body:has(.course-tabs-navigation) .learning-header {
+  position: sticky;
+  top: 0;
+  z-index: $zindex-sticky + 1;
+  background-color: $white;
+}
+
 .min-height-700 {
   min-height: 700px;
 }

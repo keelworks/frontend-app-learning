@@ -70,6 +70,38 @@ describe('Course Tabs Navigation', () => {
     expect(screen.getByRole('link', { name: tabs[1].title })).not.toHaveClass('active');
   });
 
+  it('marks only the selected tab as the current page', () => {
+    const tabs = [
+      { url: 'http://test-url1', title: 'Item 1', slug: 'test1' },
+      { url: 'http://test-url2', title: 'Item 2', slug: 'test2' },
+    ];
+    renderComponent({ tabs, activeTabSlug: tabs[1].slug });
+
+    expect(screen.getByRole('link', { name: tabs[1].title })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: tabs[0].title })).not.toHaveAttribute('aria-current');
+  });
+
+  it('publishes the Global Nav height for the sticky tabs offset', () => {
+    const header = document.createElement('header');
+    header.className = 'learning-header';
+    document.body.appendChild(header);
+    let resizeCallback;
+    const disconnect = jest.fn();
+    global.ResizeObserver = jest.fn((callback) => {
+      resizeCallback = callback;
+      return { observe: jest.fn(), disconnect };
+    });
+    Object.defineProperty(header, 'offsetHeight', { configurable: true, value: 72 });
+
+    renderComponent();
+    resizeCallback();
+
+    expect(document.documentElement.style.getPropertyValue('--learning-header-height')).toBe('72px');
+
+    header.remove();
+    delete global.ResizeObserver;
+  });
+
   it('should NOT render CoursewareSearch if the flag is off', () => {
     renderComponent();
 
