@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 
 import { getConfig } from '@edx/frontend-platform';
+import { useIntl } from '@edx/frontend-platform/i18n';
 import { useToggle } from '@openedx/paragon';
 
 import { CourseTabsNavigation } from '../course-tabs';
@@ -14,6 +15,7 @@ import useEnrollmentAlert from '../alerts/enrollment-alert';
 import useLogistrationAlert from '../alerts/logistration-alert';
 
 import ProductTours from '../product-tours/ProductTours';
+import messages from './messages';
 
 const LoadedTabPage = ({
   activeTabSlug,
@@ -36,7 +38,20 @@ const LoadedTabPage = ({
   const logistrationAlert = useLogistrationAlert(courseId);
   const enrollmentAlert = useEnrollmentAlert(courseId);
 
+  const intl = useIntl();
+
   const activeTab = tabs.filter(tab => tab.slug === activeTabSlug)[0];
+
+  // Dates content now lives on the Progress page, so the Dates tab is hidden.
+  // Bookmark is not a backend course tab; it links to the LMS bookmarks page.
+  const navTabs = [
+    ...tabs.filter(tab => tab.slug !== 'dates'),
+    {
+      slug: 'bookmarks',
+      title: intl.formatMessage(messages.bookmarkTab),
+      url: `${getConfig().LMS_BASE_URL}/courses/${courseId}/bookmarks/`,
+    },
+  ];
 
   const streakLengthToCelebrate = celebrations && celebrations.streakLengthToCelebrate;
   const streakDiscountCouponEnabled = celebrations && celebrations.streakDiscountEnabled && verifiedMode;
@@ -78,7 +93,7 @@ const LoadedTabPage = ({
             ...logistrationAlert,
           }}
         />
-        <CourseTabsNavigation tabs={tabs} className="mb-3" activeTabSlug={activeTabSlug} />
+        <CourseTabsNavigation tabs={navTabs} className="mb-3" activeTabSlug={activeTabSlug} />
         <div className="container-xl">
           {children}
         </div>

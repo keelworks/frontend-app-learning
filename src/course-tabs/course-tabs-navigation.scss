@@ -1,5 +1,9 @@
 .course-tabs-navigation {
-  position: relative;
+  // Stick directly below the Global Nav (.learning-header) while scrolling.
+  position: sticky;
+  top: var(--learning-header-height, 0px);
+  z-index: $zindex-sticky;
+  background-color: $white;
   border-bottom: solid 1px #eaeaea;
 
   .nav a,
@@ -13,6 +17,14 @@
     &:not(.active):hover {
       background-color: $light-400;
       border-bottom: none;
+    }
+
+    // Selected tab: stays highlighted while its page is active.
+    &.active {
+      color: $primary-500;
+      font-weight: $font-weight-bold;
+      background-color: $light-300;
+      border-bottom: 3px solid $primary-500;
     }
   }
 
