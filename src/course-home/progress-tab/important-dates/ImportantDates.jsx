@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FormattedDate, useIntl } from '@edx/frontend-platform/i18n';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faCircle } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
 
 import { useModel } from '../../../generic/model-store';
-import { useContextId } from '../../../data/hooks';
 import { fetchDatesTab } from '../../data/thunks';
 
 import messages from './messages';
@@ -24,7 +23,7 @@ const RELEVANT_DATE_TYPES = ['assignment-due-date', 'course-start-date', 'course
  */
 const ImportantDates = () => {
   const intl = useIntl();
-  const courseId = useContextId();
+  const { courseId } = useSelector(state => state.courseHome);
   const dispatch = useDispatch();
   const nowRef = useRef(new Date());
   const fetchStartedRef = useRef(false);
